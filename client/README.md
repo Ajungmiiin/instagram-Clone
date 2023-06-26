@@ -10,4 +10,4 @@
 
 ## src -> components 파일과 utils 파일 만들기
 - **utils** -> 서버 요청 함수 라이브러리 (POSTMAN 을 대신해주는 함수)
-- Method 가 생략 된 부분은 "GET" 
+- Method 옵션의 디폴트 값은 "GET" 
