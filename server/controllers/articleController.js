@@ -5,7 +5,41 @@ const Favorite = require('../models/Favorite')
 const fileHandler = require('../utils/fileHandler')
 
 // 피드 가져오기
-exports.feed = async(req, res, next) => {}
+exports.feed = async(req, res, next) => {
+  try{
+    // 팔로워가 로그인 유저인 도큐먼트 검색
+    const follows = await Follow.find({ follower: req.user._id})
+    // 로그인 유저가 팔로우 하는 유저리스트
+    const followings = follows.map(follow => follow.following )
+
+    // 검색 조건 : 게시물 작성자가 팔로잉 유저와 본인인 경우
+    const where = { author: [...followings, req.user._id ]}
+    const limit = req.query.limit || 5;
+    const skip = req.query.skip || 0 ;
+
+    // 검색
+    const articleCount = await Article.count(where)
+    const articles = await Article 
+      .find(where)
+      .populate({ // 조인
+        path: 'author', // 유저 컬렉션과 조인
+        select: 'username avatar' // 검색 필드
+      })
+      .populate({
+        path: 'isFavorite' // 좋아요 여부 확인
+      })
+      .populate({
+        path: 'commentCount'
+      })
+      .sort({ created: 'desc'}) // 정렬 : 생성일 기준 내림차순(desc)
+      .skip(skip)
+      .limit(limit)
+
+    res.json({ articles, articleCount })
+  } catch (error) {
+    next(error)
+  }
+}
 
 // 게시물 가져오기
 exports.find = async (req, res, next) => {

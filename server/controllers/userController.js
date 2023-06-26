@@ -2,9 +2,13 @@ const User = require("../models/User")
 const fileHandler = require('../utils/fileHandler')
 const {body ,validationResult} = require('express-validator')
 
+// 각 정보의 유효성 검사
 const isValidUsername = () => body('username')
-  .trim()
+  // trim() 앞뒤 공백 제거
+  .trim() 
+  // 최소 글자수는 5자 
   .isLength({ min: 5 }).withMessage('Username must be at least 5 characters')
+  // username은 영어와, 숫자만 가능
   .isAlphanumeric().withMessage("Username is only allowed in alphabet and number.")
 
 const isValidEmail = () => body('email')
@@ -15,13 +19,14 @@ const isValidPassword = () => body('password')
   .trim()
   .isLength({ min: 5 }).withMessage('Password must be at least 5 characters')
 
+
+// 이미 가입된 정보 일 때
 const emailInUse = async (email) => {
   const user = await User.findOne({ email });
   if (user) {
     return Promise.reject('E-mail is already in use');
   }
 }
-
 const usernameInUse = async (username) => {
   const user = await User.findOne({ username });
   if (user) {
@@ -29,13 +34,13 @@ const usernameInUse = async (username) => {
   }
 }
 
+// 로그인하려는 정보가 잘못 되었을 때 
 const doesEmailExists = async (email) => {
   const user = await User.findOne({ email });
   if (!user) {
     return Promise.reject('User is not found');
   }
 }
-
 const doesPasswordMatch = async (password, { req }) => {
   const email = req.body.email;
   const user = await User.findOne({ email });
@@ -46,22 +51,21 @@ const doesPasswordMatch = async (password, { req }) => {
 
 // 회원가입
 exports.create = [
+  // 이미 가입되어 있는 정보인지 확인
   isValidUsername().custom(usernameInUse),
   isValidEmail().custom(emailInUse),
   isValidPassword(),
   async (req, res, next) => {
     try {
-
       const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
+      if (!errors.isEmpty()) { // 클라이언트로부터 받은 정보가 유효하지 않을 때
         const err = new Error();
         err.errors = errors.array();
         err.status = 400;
         throw err;
       }
-
       const { email, fullName, username, password } = req.body;
+      // 클라이언트로 부터 받은 정보를 객체데이터로 생성
 
       const user = new User();
 
@@ -69,10 +73,11 @@ exports.create = [
       user.fullName = fullName;
       user.username = username;
       user.setPassword(password);
+      // 클라이언트로 부터 받은 정보로 생성한 객체데이터를 user 객체에 담음
 
-      await user.save();
+      await user.save(); // 담은 정보를 save
 
-      res.json({ user });
+      res.json({ user }); // json 으로 변환하여 클라이언트에게 응답함
 
     } catch (error) {
       next(error)
@@ -91,7 +96,6 @@ exports.update = [
   async(req, res, next) => {
     try { // 유효성 검사 결과
       const errors = validationResult(req);
-
       // 검사 실패
       if (!errors.isEmpty()) {
         const err = new Error();
@@ -99,7 +103,6 @@ exports.update = [
         err.status = 400; // 400 Bad Request
         throw err
       }
-
       // req.user: 로그인 유저
       const _user = req.user;
 
@@ -108,7 +111,8 @@ exports.update = [
         _user.avatar = req.file.filename;
       }
       // 로그인 유저의 정보 중 클라이언트가 수정 요청을 한 정보만 업데이트한다
-      Object.assign(_user, req.body);
+      Object.assign(_user, req.body); 
+      // Object.assign(1,2) 1번 객체에 2번 객체를 덮어씌운다
 
       await _user.save() // 변경사항을 저장한다
 
@@ -133,14 +137,12 @@ exports.update = [
 ]
 
 // 로그인
-exports.login = [
+exports.login = [ // 로그인하려는 정보가 유효한지 검사
   isValidEmail().custom(doesEmailExists),
   isValidPassword().custom(doesPasswordMatch),
   async (req, res, next) => {
     try {
-
       const errors = validationResult(req);
-
       if (!errors.isEmpty()) {
         const err = new Error();
         err.errors = errors.array();
@@ -148,9 +150,10 @@ exports.login = [
         throw err;
       }
 
-      const { email } = req.body;
+      const { email } = req.body; // body에 담긴 정보를 담음
 
-      const _user = await User.findOne({ email });
+      const _user = await User.findOne({ email }); 
+      // User 데이터에서 해당하는 email 을 가진 정보를 찾음
 
       const token = _user.generateJWT();
   

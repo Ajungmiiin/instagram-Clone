@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 // Schema (구조)
-const userSchema = new Schema({
+const userSchema = new Schema({ // user의 구조
   username: { type: String, required: true, minLength: 3, maxLength: 100 }, 
   password: { type: String, minLength: 5 },
   salt: { type: String },
@@ -46,4 +46,4 @@ userSchema.methods.checkPassword = function(password) {
   return this.password === hashedPassword;
 }
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema); // 모듈 내보내기 
