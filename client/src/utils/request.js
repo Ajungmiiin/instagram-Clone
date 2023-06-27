@@ -27,7 +27,7 @@ export async function updateUser (formData) {
   const res = await fetch(`${server}/user`, {
     method: "PUT",
     // 로컬스토리지에 저장된 토큰을 추출하여 헤더에 담는다
-    headers: { 'Authorization': 'Bearer' + JSON.parse(localStorage.getItem("user")).token },
+    headers: { 'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem("user")).token },
     body: formData
   })
 
@@ -59,7 +59,7 @@ export async function signIn(email, password) {
 export async function feed(skip) { 
   // 요청변수 skip -> 더보기 기능 구현
   const res = await fetch(`${server}/feed?skip=${skip}`, {
-    headers: { "Authorization": "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { "Authorization": "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
 
   if (!res.ok) {
@@ -72,7 +72,7 @@ export async function feed(skip) {
 
 export async function getArticle(id) {
   const res = await fetch(`${server}/articles/${id}` , {
-    headers: { "Authorization" : "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { "Authorization" : "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
 
   if (!res.ok) {
@@ -86,7 +86,7 @@ export async function getArticle(id) {
 export async function createArticle(formData) {
   const res = await fetch(`${server}/articles`, {
     method: "POST",
-    headers: { "Authorization" : "Bearer" + JSON.parse(localStorage.getItem("user").token)},
+    headers: { "Authorization" : "Bearer " + JSON.parse(localStorage.getItem("user").token)},
     body: formData
   })
 
@@ -102,7 +102,7 @@ export async function createArticle(formData) {
 export async function deleteArticle(id) {
   const res = await fetch(`${server}/articles/${id}`, {
     method: "DELETE",
-    headers: { "Authorization": "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { "Authorization": "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -115,7 +115,7 @@ export async function deleteArticle(id) {
 export async function favorite(id) {
   const res = await fetch(`${server}/articles/${id}/favorite`, {
     method: 'POST',
-    headers: { "Authorization": "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { "Authorization": "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -128,7 +128,7 @@ export async function favorite(id) {
 export async function unfavorite(id) {
   const res = await fetch(`${server}/articles/${id}/favorite`, {
     method: 'DELETE',
-    headers: { "Authorization": "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { "Authorization": "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -142,7 +142,7 @@ export async function unfavorite(id) {
 
 export async function getComments(id) {
   const res = await fetch(`${server}/articles/${id}/comments`, {
-    headers: { 'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { 'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -156,7 +156,7 @@ export async function createCommnet(id, content) {
   const res = await fetch(`${server}/articles/${id}/comments`, {
     method:"POST",
     headers: { 
-      'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token,
+      'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token,
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ content })
@@ -172,7 +172,7 @@ export async function createCommnet(id, content) {
 export async function deleteComment(id) {
   const res = await fetch(`${server}/comments/${id}`, {
     method: "DELETE",
-    headers: { 'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { 'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -187,7 +187,7 @@ export async function deleteComment(id) {
 export async function getProfiles(username) {
   // 프로필 검색에서 활용
   const res = await fetch (`${server}/profiles/?username=${username}`, {
-    headers: { 'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { 'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -199,7 +199,7 @@ export async function getProfiles(username) {
 
 export async function getProfile(username) {
   const res = await fetch (`${server}/profiles/${username}`, {
-    headers: { 'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { 'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -211,7 +211,7 @@ export async function getProfile(username) {
 
 export async function getTimeline(username) {
   const res = await fetch (`${server}/articles/?username=${username}`, {
-    headers: { 'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { 'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -223,7 +223,7 @@ export async function getTimeline(username) {
 
 export async function getFollowers(username) {
   const res = await fetch (`${server}/profiles/?followers=${username}`, {
-    headers: { 'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { 'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -235,7 +235,7 @@ export async function getFollowers(username) {
 
 export async function getFollowings(username) {
   const res = await fetch (`${server}/profiles/?followings=${username}`, {
-    headers: { 'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { 'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -248,7 +248,7 @@ export async function getFollowings(username) {
 export async function follow(username) {
   const res = await fetch(`${server}/profiles/${username}/follow`, {
     method: "POST",
-    headers: { 'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { 'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
@@ -261,7 +261,7 @@ export async function follow(username) {
 export async function unfollow(username) {
   const res = await fetch(`${server}/profiles/${username}/follow`, {
     method: "DELETE",
-    headers: { 'Authorization': "Bearer" + JSON.parse(localStorage.getItem("user")).token}
+    headers: { 'Authorization': "Bearer " + JSON.parse(localStorage.getItem("user")).token}
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
